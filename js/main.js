@@ -1,5 +1,21 @@
 const form = document.querySelector('form');
 
+form.addEventListener('submit', (e) => {
+	if (!isText('userid', 5)) e.preventDefault();
+	if (!isText('comments', 10)) e.preventDefault();
+});
+
+function isText(name, len) {
+	const input = form.querySelector(`[name=${name}]`);
+	const text = input.value.trim();
+	if (text.length < len) {
+		alert(`입력한 글자 갯수가 ${len}글자 이상이어야 합니다.`);
+		return false;
+	} else {
+		return true;
+	}
+}
+
 /*
   form 인증 로직 흐름
   1. form 요소에 submit 이벤트 (전송) 연결
