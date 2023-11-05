@@ -4,7 +4,8 @@ form.addEventListener('submit', (e) => {
 	//전송처리 안되게 먼저 처리
 	if (!isText('userid', 5)) e.preventDefault();
 	if (!isText('comments', 10)) e.preventDefault();
-	if (!isPwd('pwd1', 'pwd2', 5)) e.preventDefault();
+	if (!isPwd('pwd1', 5)) e.preventDefault();
+	if (!isRePwd('pwd1', 'pwd2')) e.preventDefault();
 	if (!isSelect('edu')) e.preventDefault();
 	if (!isEmail('email')) e.preventDefault();
 	if (!isCheck('gender')) e.preventDefault();
@@ -26,24 +27,31 @@ function isText(name, len) {
 }
 
 //비밀번호 입력 인증로직 함수
-function isPwd(name1, name2, len) {
-	//정규표현식으로 0부터 9까지의 값을 조건으로 지정해놓음
+function isPwd(name, len) {
 	const num = /[0-9]/;
 	const eng = /[a-zA-Z]/; //모든 소문자 a부터 z까지, 모든 대문자 A부터 Z까지
 	const spc = /[!@#$%^&*()]/;
+	const pwd1 = form.querySelector(`[name=${name}]`).value;
+
+	//만약 비밀번호의 글자값이 len보다 적거나 혹은 비밀번호에 숫자가없거나
+	if (pwd1.length < len || !num.test(pwd1) || !eng.test(pwd1) || !spc.test(pwd1)) {
+		showErr(name);
+		return false;
+	} else {
+		removeErr(name);
+		return true;
+	}
+}
+
+//비밀번호 재입력 인증로직 함수
+function isRePwd(name1, name2) {
 	const pwd1 = form.querySelector(`[name=${name1}]`).value;
 	const pwd2 = form.querySelector(`[name=${name2}]`).value;
 
-	//만약 비밀번호의 글자값이 len보다 적거나 혹은 비밀번호에 숫자가없거나
-	if (pwd1.length < len || !num.test(pwd1) || !eng.test(pwd1) || !spc.test(pwd1) || pwd1 !== pwd2) {
-		// alert(
-		// 	`비밀번호는 ${len}글자이상, 특수문자, 숫자, 문자를 모두 포함해야 하고 두개의 비밀번호가 같아야 합니다.`
-		// );
-		showErr(name1);
+	if (pwd1 !== pwd2 || !pwd2) {
 		showErr(name2);
 		return false;
 	} else {
-		removeErr(name1);
 		removeErr(name2);
 		return true;
 	}
