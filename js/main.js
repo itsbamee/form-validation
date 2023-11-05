@@ -1,11 +1,14 @@
 const form = document.querySelector('form');
 
 form.addEventListener('submit', (e) => {
+	//전송처리 안되게 먼저 처리
 	// if (!isText('userid', 5)) e.preventDefault();
 	// if (!isText('comments', 10)) e.preventDefault();
 	// if (!isPwd('pwd1', 'pwd2', 5)) e.preventDefault();
 	// if (!isSelect('edu')) e.preventDefault();
-	if (!isEmail('email')) e.preventDefault();
+	// if (!isEmail('email')) e.preventDefault();
+	if (!isCheck('gender')) e.preventDefault();
+	if (!isCheck('hobby')) e.preventDefault();
 });
 
 //텍스트값 입력 input 인증로직 함수
@@ -75,6 +78,20 @@ function isEmail(name) {
 				}
 			}
 		}
+	}
+}
+
+//check 인증로직
+function isCheck(name) {
+	const inputs = form.querySelectorAll(`[name=${name}]`);
+	let isChecked = false;
+	//input은 배열. 계속돌면서 덮어쓰기. 하나라도 true있으면 false -> true로 변경
+	inputs.forEach((input) => input.checked && (isChecked = true));
+	if (!isChecked) {
+		alert('해당 선택사항을 하나 이상 체크하세요.');
+		return false;
+	} else {
+		return true;
 	}
 }
 
