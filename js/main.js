@@ -20,6 +20,7 @@ function isText(name, len) {
 		showErr(name);
 		return false;
 	} else {
+		removeErr(name);
 		return true;
 	}
 }
@@ -42,6 +43,8 @@ function isPwd(name1, name2, len) {
 		showErr(name2);
 		return false;
 	} else {
+		removeErr(name1);
+		removeErr(name2);
 		return true;
 	}
 }
@@ -54,6 +57,7 @@ function isSelect(name) {
 		showErr(name);
 		return false;
 	} else {
+		removeErr(name);
 		return true;
 	}
 }
@@ -63,25 +67,26 @@ function isEmail(name) {
 	const input = form.querySelector(`[name=${name}]`).value;
 
 	if (!/@/.test(input)) {
-		// alert('@가 포함되어야 합니다.');
+		//alert('@가 포함되어야 합니다.');
 		showErr(name);
 		return false;
 	} else {
 		if (!input.split('@')[0] || !input.split('@')[1]) {
-			// alert('@ 앞뒤로 문자값이 있어야 합니다.');
+			//alert('@앞뒤로 문자값이 있어야 됩니다.');
 			showErr(name);
 			return false;
 		} else {
-			if (!/\./.test(!input.split('@')[1])) {
-				// alert('이메일주소에 .이 있어야 됩니다.');
+			if (!/\./.test(input.split('@')[1])) {
+				//alert('이메일주소에 .이 있어야 됩니다.');
 				showErr(name);
-				return true;
+				return false;
 			} else {
 				if (!input.split('.')[0] || !input.split('.')[1]) {
-					// alert('앞뒤로 문자값이 있어야 됩니다.');
+					//alert('.앞뒤로 문자값이 있어야 됩니다.');
 					showErr(name);
 					return false;
 				} else {
+					removeErr(name);
 					return true;
 				}
 			}
@@ -100,12 +105,15 @@ function isCheck(name) {
 		showErr(name);
 		return false;
 	} else {
+		removeErr(name);
 		return true;
 	}
 }
 
 //에러구문 출력함수
 function showErr(name) {
+	removeErr(name);
+
 	const el = form.querySelector(`[name=${name}]`);
 	const parentEl = el.closest('td');
 	let errs = '';
@@ -115,6 +123,13 @@ function showErr(name) {
 	const errEl = document.createElement('p');
 	errEl.innerText = errs;
 	parentEl.append(errEl);
+}
+
+function removeErr(name) {
+	const el = form.querySelector(`[name=${name}]`);
+	const parentEl = el.closest('td');
+	const prevErrEl = parentEl.querySelector('p');
+	prevErrEl && prevErrEl.remove();
 }
 
 /*
