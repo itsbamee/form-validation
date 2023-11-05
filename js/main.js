@@ -2,11 +2,11 @@ const form = document.querySelector('form');
 
 form.addEventListener('submit', (e) => {
 	//전송처리 안되게 먼저 처리
-	// if (!isText('userid', 5)) e.preventDefault();
-	// if (!isText('comments', 10)) e.preventDefault();
-	// if (!isPwd('pwd1', 'pwd2', 5)) e.preventDefault();
-	// if (!isSelect('edu')) e.preventDefault();
-	// if (!isEmail('email')) e.preventDefault();
+	if (!isText('userid', 5)) e.preventDefault();
+	if (!isText('comments', 10)) e.preventDefault();
+	if (!isPwd('pwd1', 'pwd2', 5)) e.preventDefault();
+	if (!isSelect('edu')) e.preventDefault();
+	if (!isEmail('email')) e.preventDefault();
 	if (!isCheck('gender')) e.preventDefault();
 	if (!isCheck('hobby')) e.preventDefault();
 });
@@ -16,7 +16,8 @@ function isText(name, len) {
 	const input = form.querySelector(`[name=${name}]`);
 	const text = input.value.trim();
 	if (text.length < len) {
-		alert(`입력한 글자 갯수가 ${len}글자 이상이어야 합니다.`);
+		// alert(`입력한 글자 갯수가 ${len}글자 이상이어야 합니다.`);
+		showErr(name);
 		return false;
 	} else {
 		return true;
@@ -30,13 +31,15 @@ function isPwd(name1, name2, len) {
 	const eng = /[a-zA-Z]/; //모든 소문자 a부터 z까지, 모든 대문자 A부터 Z까지
 	const spc = /[!@#$%^&*()]/;
 	const pwd1 = form.querySelector(`[name=${name1}]`).value;
-	const pwd2 = form.querySelector(`[name=${name1}]`).value;
+	const pwd2 = form.querySelector(`[name=${name2}]`).value;
 
 	//만약 비밀번호의 글자값이 len보다 적거나 혹은 비밀번호에 숫자가없거나
 	if (pwd1.length < len || !num.test(pwd1) || !eng.test(pwd1) || !spc.test(pwd1) || pwd1 !== pwd2) {
-		alert(
-			`비밀번호는 ${len}글자이상, 특수문자, 숫자, 문자를 모두 포함해야 하고 두개의 비밀번호가 같아야 합니다.`
-		);
+		// alert(
+		// 	`비밀번호는 ${len}글자이상, 특수문자, 숫자, 문자를 모두 포함해야 하고 두개의 비밀번호가 같아야 합니다.`
+		// );
+		showErr(name1);
+		showErr(name2);
 		return false;
 	} else {
 		return true;
@@ -47,7 +50,8 @@ function isPwd(name1, name2, len) {
 function isSelect(name) {
 	const input = form.querySelector(`[name=${name}]`).value;
 	if (!input) {
-		alert(`학력을 선택해주세요.`);
+		// alert(`학력을 선택해주세요.`);
+		showErr(name);
 		return false;
 	} else {
 		return true;
@@ -59,19 +63,23 @@ function isEmail(name) {
 	const input = form.querySelector(`[name=${name}]`).value;
 
 	if (!/@/.test(input)) {
-		alert('@가 포함되어야 합니다.');
+		// alert('@가 포함되어야 합니다.');
+		showErr(name);
 		return false;
 	} else {
 		if (!input.split('@')[0] || !input.split('@')[1]) {
-			alert('@ 앞뒤로 문자값이 있어야 합니다.');
+			// alert('@ 앞뒤로 문자값이 있어야 합니다.');
+			showErr(name);
 			return false;
 		} else {
 			if (!/\./.test(!input.split('@')[1])) {
-				alert('이메일주소에 .이 있어야 됩니다.');
+				// alert('이메일주소에 .이 있어야 됩니다.');
+				showErr(name);
 				return true;
 			} else {
 				if (!input.split('.')[0] || !input.split('.')[1]) {
-					alert('앞뒤로 문자값이 있어야 됩니다.');
+					// alert('앞뒤로 문자값이 있어야 됩니다.');
+					showErr(name);
 					return false;
 				} else {
 					return true;
@@ -88,11 +96,25 @@ function isCheck(name) {
 	//input은 배열. 계속돌면서 덮어쓰기. 하나라도 true있으면 false -> true로 변경
 	inputs.forEach((input) => input.checked && (isChecked = true));
 	if (!isChecked) {
-		alert('해당 선택사항을 하나 이상 체크하세요.');
+		// alert('해당 선택사항을 하나 이상 체크하세요.');
+		showErr(name);
 		return false;
 	} else {
 		return true;
 	}
+}
+
+//에러구문 출력함수
+function showErr(name) {
+	const el = form.querySelector(`[name=${name}]`);
+	const parentEl = el.closest('td');
+	let errs = '';
+	el.getAttribute('placeholder')
+		? (errs = el.getAttribute('placeholder'))
+		: (errs = '하나이상 선택하세요.');
+	const errEl = document.createElement('p');
+	errEl.innerText = errs;
+	parentEl.append(errEl);
 }
 
 /*
